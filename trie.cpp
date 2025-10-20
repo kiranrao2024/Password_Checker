@@ -11,20 +11,57 @@ Trie::Trie() {
 
 void Trie::insert(string phrase) {
     Node* curr = root;
+    Node* prev = nullptr;
 
     for (int i = 0; i < phrase.length(); i++) {
         char symbol = phrase[i];
+        bool found = false;
+
+        for (Node*& child : curr->children) {
+            if (symbol == child->c) {
+                prev = curr;
+                curr = child;
+                found = true;
+
+                break;
+            }
+        }
+
+        if (!found) {
+            prev = curr;
+            curr = new Node(phrase[i]);
+
+            prev->children.push_back(curr);
+        }
+    }
+
+    curr->isEnd = true;
+}
+
+bool Trie::find(string phrase) {
+    Node* curr = root;
+
+    for (int i = 0; i < phrase.length(); i++) {
+        char symbol = phrase[i];
+        bool found = false;
 
         for (Node*& child : curr->children) {
             if (symbol == child->c) {
                 curr = child;
+                found = true;
+
+                break;
             }
         }
 
-        curr = new Node(phrase[i]);
+        if (!found) {
+            return false;
+        }
     }
-}
 
-bool Trie::find(string phrase) {
+    if (curr->isEnd) {
+        return true;
+    }
 
+    return false;
 }
