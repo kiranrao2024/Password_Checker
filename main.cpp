@@ -2,6 +2,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
+
+#include "trie.h"
 using namespace std;
 
 bool readFile(const string& path, vector<string>& v) {
@@ -42,7 +44,7 @@ void printMenu() {
     cout << endl;
 }
 
-void handleInput(int choice) {
+void handleInput(int choice, Trie &trie) {
     if (choice == 1) {
         // print top N most frequently brute forced passwords
 
@@ -55,6 +57,12 @@ void handleInput(int choice) {
         int choice = getChoice();
         if (choice == 1) {
             // search using trie
+            bool found = trie.find(input);
+            if (found) {
+                cout << "found" << endl;
+            } else {
+                cout << "not found" << endl;
+            }
         } else if (choice == 2) {
             // search using hashmap
         } else {
@@ -80,13 +88,16 @@ int main() {
         return 1;
     }
 
+    // create trie and hashmap
+    Trie trie = Trie(passwords);
+
     // main processing loop
     while (true) {
         printMenu();
 
         cout << "Enter your selection: ";
         int choice = getChoice();
-        handleInput(choice);
+        handleInput(choice, trie);
     }
 
     return 0;

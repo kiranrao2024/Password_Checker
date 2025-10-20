@@ -4,8 +4,10 @@
 
 #include "trie.h"
 
-Trie::Trie() {
-    root = nullptr;
+Trie::Trie(vector<string> passwords) {
+    for (auto& password : passwords) {
+        this->insert(password);
+    }
 }
 
 

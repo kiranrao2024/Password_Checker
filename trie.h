@@ -26,7 +26,7 @@ class Trie {
 
 public:
     // functions
-    Trie();
+    Trie(vector<string> passwords);
     void insert(string phrase);
     bool find(string phrase);
 };
