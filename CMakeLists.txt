@@ -5,4 +5,6 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(DSAProject2 main.cpp
         trie.cpp
-        trie.h)
+        trie.h
+        HashTable.cpp
+        HashTable.h)

@@ -2,7 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
-
+#include "hashtable.h"
 #include "trie.h"
 using namespace std;
 
