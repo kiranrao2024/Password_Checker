@@ -9,17 +9,18 @@ using namespace std;
 
 class Hashtable {
     // private variables
-    float loadFactor;
-    float threshold;
-    size_t size;
-    size_t capacity;
+    double loadFactor = 0;
+    float threshold = 1.5;
+    size_t size = 0;
+    size_t capacity = 16;
     vector<vector<string>> table;
 
     // public functions
 public:
-    Hashtable(vector<string> passwords);
-    void insert(string phrase);
-    bool find(string phrase);
+    Hashtable(const vector<string>& passwords);
+    void insert(const string& phrase);
+    bool find(const string& phrase) const;
     void resize();
-    size_t hash(const string& phrase);
+    size_t generateHash(const string& phrase) const;
+    void calculateLoadFactor();
 };
