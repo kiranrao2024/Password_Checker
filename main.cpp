@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <chrono>
 #include "hashtable.h"
 #include "trie.h"
 using namespace std;
@@ -57,19 +58,32 @@ void handleInput(int choice, Trie &trie, Hashtable &hashtable) {
         int choice = getChoice();
         if (choice == 1) {
             // search using trie
+            auto start = chrono::high_resolution_clock::now();
             bool found = trie.find(input);
+            auto end = chrono::high_resolution_clock::now();
+
+            // calculate time duration
+            chrono::duration<double> elapsed = end - start;
+
             if (found) {
-                cout << "found" << endl;
+                cout << "found in " << elapsed.count() << " seconds" << endl;
             } else {
-                cout << "not found" << endl;
+                cout << "not found. Search took " << elapsed.count() << " seconds." << endl;
             }
         } else if (choice == 2) {
             // search using hashmap
+
+            auto start = chrono::high_resolution_clock::now();
             bool found = hashtable.find(input);
+            auto end = chrono::high_resolution_clock::now();
+
+            // calculate time duration
+            chrono::duration<double> elapsed = end - start;
+
             if (found) {
-                cout << "found" << endl;
+                cout << "found in " << elapsed.count() << " seconds" << endl;
             } else {
-                cout << "not found" << endl;
+                cout << "not found. Search took " << elapsed.count() << " seconds." << endl;
             }
         } else {
             // reloop if input is invalid
