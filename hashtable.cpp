@@ -6,6 +6,7 @@
 using namespace std;
 
 Hashtable::Hashtable(const vector<string>& passwords) : table(capacity) {
+    // insert all passwords into hash table
     for (auto& password : passwords) {
         insert(password);
     }
@@ -45,21 +46,26 @@ bool Hashtable::find(const string& phrase) const {
 }
 
 void Hashtable::resize() {
+    // create a temp vector to save data
     vector<vector<string>> temp = move(table);
 
+    // resize hash table
     table.clear();
     size = 0;
     capacity *= 2;
     table.resize(capacity);
 
+    // reinsert elements
     for (size_t i = 0; i < temp.size(); i++) {
         for (size_t j = 0; j < temp[i].size(); j++) {
+            // find new hash and add
             size_t hashcode = generateHash(temp[i][j]);
             table[hashcode].push_back(temp[i][j]);
             size++;
         }
     }
 
+    // recalculate load factor
     calculateLoadFactor();
 }
 

@@ -44,7 +44,7 @@ void printMenu() {
     cout << endl;
 }
 
-void handleInput(int choice, Trie &trie) {
+void handleInput(int choice, Trie &trie, Hashtable &hashtable) {
     if (choice == 1) {
         // print top N most frequently brute forced passwords
 
@@ -65,6 +65,12 @@ void handleInput(int choice, Trie &trie) {
             }
         } else if (choice == 2) {
             // search using hashmap
+            bool found = hashtable.find(input);
+            if (found) {
+                cout << "found" << endl;
+            } else {
+                cout << "not found" << endl;
+            }
         } else {
             // reloop if input is invalid
             cout << "Invalid Input. Please try again!" << endl;
@@ -90,6 +96,7 @@ int main() {
 
     // create trie and hashmap
     Trie trie = Trie(passwords);
+    Hashtable hashtable = Hashtable(passwords);
 
     // main processing loop
     while (true) {
@@ -97,8 +104,6 @@ int main() {
 
         cout << "Enter your selection: ";
         int choice = getChoice();
-        handleInput(choice, trie);
+        handleInput(choice, trie, hashtable);
     }
-
-    return 0;
 }
