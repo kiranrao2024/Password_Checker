@@ -45,9 +45,24 @@ void printMenu() {
     cout << endl;
 }
 
-void handleInput(int choice, Trie &trie, Hashtable &hashtable) {
+void handleInput(int choice, Trie &trie, Hashtable &hashtable, vector<string> &passwords) {
     if (choice == 1) {
         // print top N most frequently brute forced passwords
+        cout << "Enter number of top n most frequently brute forced passwords (max of 100,000):";;
+        int number = getChoice();
+
+        if (number <= 0 || number > 100000) {
+            cout << "Invalid Input. Please try again!\n" << endl;
+        } else {
+            auto start = chrono::high_resolution_clock::now();
+            for (int i = 0; i < number; i++) {
+                cout << passwords[i] << endl;
+            }
+            auto end = chrono::high_resolution_clock::now();
+            chrono::duration<double> elapsed = end - start;
+            cout << "\nprinted using vector in " << elapsed.count() << " seconds" << endl;
+            cout << endl;
+        }
 
     } else if (choice == 2) {
         // check if entered password is in list of passwords
@@ -60,34 +75,42 @@ void handleInput(int choice, Trie &trie, Hashtable &hashtable) {
             // search using trie
             auto start = chrono::high_resolution_clock::now();
             bool found = trie.find(input);
+            for (int i = 0; i < 100000; i++) {
+                trie.find(input);
+            }
             auto end = chrono::high_resolution_clock::now();
 
             // calculate time duration
             chrono::duration<double> elapsed = end - start;
 
             if (found) {
-                cout << "found in " << elapsed.count() << " seconds" << endl;
+                cout << "found in " << elapsed.count()/100001 << " seconds" << endl;
             } else {
-                cout << "not found. Search took " << elapsed.count() << " seconds." << endl;
+                cout << "not found. Search took " << elapsed.count()/100001 << " seconds." << endl;
             }
+            cout << endl;
         } else if (choice == 2) {
             // search using hashmap
 
             auto start = chrono::high_resolution_clock::now();
             bool found = hashtable.find(input);
+            for (int i = 0; i < 1000000; i++) {
+                hashtable.find(input);
+            }
             auto end = chrono::high_resolution_clock::now();
 
             // calculate time duration
             chrono::duration<double> elapsed = end - start;
 
             if (found) {
-                cout << "found in " << elapsed.count() << " seconds" << endl;
+                cout << "found in " << elapsed.count()/1000001 << " seconds" << endl;
             } else {
-                cout << "not found. Search took " << elapsed.count() << " seconds." << endl;
+                cout << "not found. Search took " << elapsed.count()/1000001 << " seconds." << endl;
             }
+            cout << endl;
         } else {
             // reloop if input is invalid
-            cout << "Invalid Input. Please try again!" << endl;
+            cout << "Invalid Input. Please try again!\n" << endl;
         }
     } else if (choice == 3) {
         // exit program
@@ -95,7 +118,7 @@ void handleInput(int choice, Trie &trie, Hashtable &hashtable) {
         exit(0);
     } else {
         // reloop if input is invalid
-        cout << "Invalid Input. Please try again!" << endl;
+        cout << "Invalid Input. Please try again!\n" << endl;
     }
 }
 
@@ -118,6 +141,6 @@ int main() {
 
         cout << "Enter your selection: ";
         int choice = getChoice();
-        handleInput(choice, trie, hashtable);
+        handleInput(choice, trie, hashtable, passwords);
     }
 }
