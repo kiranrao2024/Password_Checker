@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <chrono>
+#include <limits>
 #include "hashtable.h"
 #include "trie.h"
 using namespace std;
@@ -22,23 +23,56 @@ bool readFile(const string& path, vector<string>& v) {
     return true;
 }
 
-int getChoice() {
+int getMenuChoice() {
     int choice;
-    cin >> choice;
 
-    return choice;
+    while (true) {
+        if (cin >> choice && (choice == 1 || choice == 2 || choice == 3)) {
+            return choice;
+        } else {
+            cout << "Invalid input, please enter a valid selection (1-3)." << endl;
+            cin.clear();
+            cin.ignore(numeric_limits<std::streamsize>::max(), '\n');
+        }
+    }
+}
+
+int getSearchType() {
+    int choice;
+    while (true) {
+        if (cin >> choice && (choice == 1 || choice == 2)) {
+            return choice;
+        } else {
+            cout << "Invalid input, please enter a valid selection (1-2)." << endl;
+            cin.clear();
+            cin.ignore(numeric_limits<std::streamsize>::max(), '\n');
+        }
+    }
+}
+
+int getNumber() {
+    int choice;
+    while (true) {
+        if (cin >> choice && (choice > 0 && choice <= 100000)) {
+            return choice;
+        } else {
+            cout << "Invalid input, please enter a valid selection (1-100000)." << endl;
+            cin.clear();
+            cin.ignore(numeric_limits<std::streamsize>::max(), '\n');
+        }
+    }
 }
 
 string getInput() {
     string input;
     cin >> input;
 
-    return input;;
+    return input;
 }
 
 void printMenu() {
-    cout << "Welcome to password checker!" << endl;
-    cout << "-----" << endl;
+    cout << "Welcome to Password Checker!" << endl;
+    cout << "----------------------------" << endl;
     cout << "1. View the N most commonly brute forced passwords" << endl;
     cout << "2. Determine if a password is one of the 100,000 most commonly brute forced passwords" << endl;
     cout << "3. Exit Program" << endl;
@@ -48,45 +82,39 @@ void printMenu() {
 void handleInput(int choice, Trie &trie, Hashtable &hashtable, vector<string> &passwords) {
     if (choice == 1) {
         // print top N most frequently brute forced passwords
-        cout << "Enter number of top n most frequently brute forced passwords (max of 100,000):";;
-        int number = getChoice();
+        cout << "Enter number of top N most frequently brute forced passwords (max of 100000, no commas): ";
+        int number = getNumber();
 
-        if (number <= 0 || number > 100000) {
-            cout << "Invalid Input. Please try again!\n" << endl;
-        } else {
-            auto start = chrono::high_resolution_clock::now();
-            for (int i = 0; i < number; i++) {
-                cout << passwords[i] << endl;
-            }
-            auto end = chrono::high_resolution_clock::now();
-            chrono::duration<double> elapsed = end - start;
-            cout << "\nprinted using vector in " << elapsed.count() << " seconds" << endl;
-            cout << endl;
+
+        auto start = chrono::high_resolution_clock::now();
+        for (int i = 0; i < number; i++) {
+            cout << passwords[i] << endl;
         }
+        auto end = chrono::high_resolution_clock::now();
 
+        auto elapsed = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
+        cout << "\n" << number << " passwords printed in " << elapsed << " nanoseconds." << endl;
+        cout << endl;
     } else if (choice == 2) {
         // check if entered password is in list of passwords
         cout << "Enter the password you want to check: ";
         string input = getInput();
 
-        cout << "Press 1 to search using a trie, Press 2 to search using a hashmap: ";
-        int choice = getChoice();
+        cout << "Press 1 to search using a Trie, Press 2 to search using a Hashmap: ";
+        int choice = getSearchType();
         if (choice == 1) {
             // search using trie
             auto start = chrono::high_resolution_clock::now();
             bool found = trie.find(input);
-            for (int i = 0; i < 100000; i++) {
-                trie.find(input);
-            }
             auto end = chrono::high_resolution_clock::now();
 
             // calculate time duration
-            chrono::duration<double> elapsed = end - start;
+            auto elapsed = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
 
             if (found) {
-                cout << "found in " << elapsed.count()/100001 << " seconds" << endl;
+                cout << input << " found in " << elapsed << " nanoseconds." << endl;
             } else {
-                cout << "not found. Search took " << elapsed.count()/100001 << " seconds." << endl;
+                cout << input << " not found. Searching took " << elapsed << " nanoseconds." << endl;
             }
             cout << endl;
         } else if (choice == 2) {
@@ -94,31 +122,21 @@ void handleInput(int choice, Trie &trie, Hashtable &hashtable, vector<string> &p
 
             auto start = chrono::high_resolution_clock::now();
             bool found = hashtable.find(input);
-            for (int i = 0; i < 1000000; i++) {
-                hashtable.find(input);
-            }
             auto end = chrono::high_resolution_clock::now();
 
             // calculate time duration
-            chrono::duration<double> elapsed = end - start;
+            auto elapsed = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
 
             if (found) {
-                cout << "found in " << elapsed.count()/1000001 << " seconds" << endl;
+                cout << input << " found in " << elapsed << " nanoseconds." << endl;
             } else {
-                cout << "not found. Search took " << elapsed.count()/1000001 << " seconds." << endl;
+                cout << input << " not found. Searching took " << elapsed << " nanoseconds." << endl;
             }
             cout << endl;
-        } else {
-            // reloop if input is invalid
-            cout << "Invalid Input. Please try again!\n" << endl;
         }
     } else if (choice == 3) {
-        // exit program
         cout << "Thank you for using Password Checker!" << endl;
         exit(0);
-    } else {
-        // reloop if input is invalid
-        cout << "Invalid Input. Please try again!\n" << endl;
     }
 }
 
@@ -126,7 +144,7 @@ int main() {
     // create passwords vector and read file into vector
     vector<string> passwords;
 
-    if (!readFile("../passwords.txt", passwords)) {
+    if (!readFile("passwords.txt", passwords)) {
         cerr << "file couldn't be opened" << endl;
         return 1;
     }
@@ -140,7 +158,7 @@ int main() {
         printMenu();
 
         cout << "Enter your selection: ";
-        int choice = getChoice();
+        int choice = getMenuChoice();
         handleInput(choice, trie, hashtable, passwords);
     }
 }
